@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <name>vQmod Manager</name>
+  <key>vqmod</key>
+  <description>"vQmod" (aka Virtual Quick Mod) is an override system designed to avoid having to change core files, original designed for OpenCart. This plugin bring its great power to Oxwall users along with a sophisticated modifications management system.</description>
+  <author>Thao Le</author>
+  <authorEmail>thaolt@songphi.com</authorEmail>
+  <authorUrl>http://thaolt.songphi.com</authorUrl>
+  <developerKey>f3cf04f4be78d22162470c28a80dbd93</developerKey>
+  <build>10000</build>
+  <copyright>(C) 2013 SongPhi LLC. All rights reserved.</copyright>
+  <license>GPLv3</license>
+  <licenseUrl>https://github.com/SongPhi/ow-vqmod#LICENSE</licenseUrl>
+</plugin>
