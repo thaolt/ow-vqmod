@@ -16,15 +16,15 @@ abstract class VQMod {
 	private static $_lastModifiedTime = 0;
 	private static $_devMode = false;
 
-	public static $logFolder = '/logs/';
-	public static $vqCachePath = '/vqcache/';
-	public static $modCache = '/mods.cache';
-	public static $protectedFilelist = '/vqprotect.txt';
-	public static $pathReplaces = '/pathReplaces.php';
+	public static $logFolder = 'ow_pluginfiles/vqmod/logs/';
+	public static $vqCachePath = 'ow_pluginfiles/vqmod/vqcache/';
+	public static $modCache = 'ow_pluginfiles/vqmod/mods.cache';
+	public static $protectedFilelist = 'ow_pluginfiles/vqmod/vqprotect.txt';
+	public static $pathReplaces = 'ow_pluginfiles/vqmod/pathReplaces.php';
 	public static $logging = true;
 	public static $log;
 	public static $fileModding = false;
-	public static $directorySeparator = '';
+	public static $directorySeparator = '/';
 	public static $_replaces = array();
 	public static $windows = false;
 
@@ -131,7 +131,7 @@ abstract class VQMod {
 		if (sha1($fileData) != $fileHash) {
 			$writePath = $cacheFile;
 			if(!file_exists($writePath) || is_writable($writePath)) {
-				file_put_contents($writePath, $fileData);
+				file_put_contents($writePath, $fileData);				
 				$changed = true;
 			}
 		}
@@ -190,7 +190,7 @@ abstract class VQMod {
 	 */
 	private static function _getMods() {
 
-		self::$_modFileList = glob(self::path('vqmod/xml/', true) . '*.xml');
+		self::$_modFileList = glob(self::path('ow_pluginfiles/vqmod/xml/', true) . '*.xml');
 
 		foreach(self::$_modFileList as $file) {
 			if(file_exists($file)) {
@@ -201,7 +201,7 @@ abstract class VQMod {
 			}
 		}
 
-		$xml_folder_time = filemtime(self::path('vqmod/xml'));
+		$xml_folder_time = filemtime(self::path('ow_pluginfiles/vqmod/xml'));
 		if($xml_folder_time > self::$_lastModifiedTime){
 			self::$_lastModifiedTime = $xml_folder_time;
 		}
@@ -694,11 +694,10 @@ class VQModObject {
 				}
 				
 				$error = ($file->hasAttribute('error')) ? $file->getAttribute('error') : 'log';
-				$fullPath = VQMod::path($fileToMod);
+				$fullPath = VQMod::path($fileToMod);				
 	
 				if(!$fullPath || !file_exists($fullPath)){
 					if(strpos($fileToMod, '*') !== false) {
-						$fullPath = VQMod::getCwd() . $fileToMod;
 					} else {
 						if ($error == 'log' || $error == 'abort') {
 							$skip = ($error == 'log') ? ' (SKIPPED)' : ' (ABORTING MOD)';
