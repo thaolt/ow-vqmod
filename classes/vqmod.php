@@ -1,4 +1,9 @@
 <?php
+
+define('OW_VQMOD_BASEDIR', OW_DIR_ROOT . DS . 'ow_pluginfiles' . DS . 'vqmod' );
+define('OW_VQMOD_CACHEDIR', OW_VQMOD_BASEDIR . DS . 'vqcache');
+
+define('OW_VQMOD_CFGFILE', OW_VQMOD_BASEDIR . DS . 'config.json');
 /**
  * VQMod
  * @description Main Object used
@@ -28,6 +33,11 @@ abstract class VQMod {
 	public static $_replaces = array();
 	public static $windows = false;
 
+	private static $cfgDefaults = array(
+		'_devMode' => 0,
+		'logging' => 1
+	);
+
 	/**
 	 * VQMod::bootup()
 	 *
@@ -54,6 +64,8 @@ abstract class VQMod {
 
 		self::$logging = (bool) $logging;
 		self::$log = new VQModLog();
+
+		self::configCheck();
 		
 		$replacesPath = self::path(self::$pathReplaces);
 		$replaces = array();
@@ -65,6 +77,18 @@ abstract class VQMod {
 		self::$_replaces = !is_array($replaces) ? array() : $replaces;
 		self::_getMods();
 		self::_loadProtected();
+	}
+
+	public static function configCheck() {
+		if (!file_exists(OW_VQMOD_CFGFILE)) {
+			$configs = self::$cfgDefaults;
+			file_put_contents(OW_VQMOD_CFGFILE, json_encode($configs));
+		} else {
+			$configs = (array) json_decode(file_get_contents(OW_VQMOD_CFGFILE));
+		}
+		foreach ($configs as $key => $value) {
+			self::$$key = $value;
+		}
 	}
 
 	/**
@@ -190,7 +214,8 @@ abstract class VQMod {
 	 */
 	private static function _getMods() {
 
-		self::$_modFileList = glob(self::path('ow_pluginfiles/vqmod/xml/', true) . '*.xml');
+		self::$_modFileList = glob(self::path('ow_plugins/vqmod/basemods/', true) . '*.xml');
+		self::$_modFileList = array_merge(self::$_modFileList, glob(self::path('ow_pluginfiles/vqmod/xml/', true) . '*.xml') );
 
 		foreach(self::$_modFileList as $file) {
 			if(file_exists($file)) {
@@ -207,7 +232,7 @@ abstract class VQMod {
 		}
 
 		$modCache = self::path(self::$modCache);
-		if(self::$_devMode || !file_exists($modCache)) {
+		if((bool)self::$_devMode || !file_exists($modCache)) {
 			self::$_lastModifiedTime = time();
 		} elseif(file_exists($modCache) && filemtime($modCache) >= self::$_lastModifiedTime) {
 			$mods = file_get_contents($modCache);
